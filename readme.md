@@ -25,8 +25,7 @@ project_name
 ├── build.sh
 ├── toolchain.cmake
 ├── .gitignore
-├── readme.md
-└── sample
+└── readme.md
 ```
 
 - **deploy :** 用于存放部署、交付的文件，其包含子目录bin、lib、include分别存放本项目最总生成的可执行文件、库文件以及对外所提供的头文件。
@@ -45,7 +44,6 @@ project_name
 - **build.sh :** build脚本文件。
 - **.gitignore :** 指明git忽略规则。
 - **readme.md :** 存放工程说明文件。
-- **sample :** 存放示例代码。
 
 # 源文件目录结构说明
 
