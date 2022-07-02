@@ -1,0 +1,17 @@
+#ifndef PROJECT_NAME_VERSION_H_
+#define PROJECT_NAME_VERSION_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define PROJECT_NAME_VERSION_STR "@project_name_VERSION_MAJOR@, @project_name_VERSION_MINOR@, @project_name_VERSION_PATCH@"
+#define PROJECT_NAME_VERSION_MAJOR @project_name_VERSION_MAJOR@
+#define PROJECT_NAME_VERSION_MINOR @project_name_VERSION_MINOR@
+#define PROJECT_NAME_VERSION_PATCH @project_name_VERSION_PATCH@
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // PROJECT_NAME_VERSION_H_

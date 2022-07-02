@@ -1,0 +1,45 @@
+buildType:
+  default: debug
+  description: 生成类型。
+  choices:
+    debug:
+      short: Debug
+      long: 禁用优化 - 包括调试信息。
+      buildType: Debug
+    release:
+      short: Release
+      long: 进行优化，提高速度 - 排除调试信息。
+      buildType: Release
+linkage:
+  default: static
+  choices:
+    static:
+      short: Static
+      long: Create static lib
+      linkage: static
+    Shared:
+      short: Shared
+      long: Create shared lib/dlls
+      linkage: shared
+platform:
+  default: ios
+  choices:
+    ios:
+      short: ios
+      long: Build for ios
+      settings:
+        PLATFORM: "OS64"
+        ARCHS: "arm64"
+        DEPLOYMENT_TARGET: "13.0"
+        CMAKE_TOOLCHAIN_FILE: platform/ios.toolchain.cmake
+    ios_simulator:
+      short: ios_simulator
+      long: Build for ios simulator
+      settings:
+        PLATFORM: "SIMULATOR64"
+        ARCHS: "arm64;x86_64"
+        DEPLOYMENT_TARGET: "13.0"
+        CMAKE_TOOLCHAIN_FILE: platform/ios.toolchain.cmake
+    win:
+      short: win
+      long: Build for win

@@ -1,96 +1,140 @@
-# 指定 cmake版本
-# 指定 project name
-# 指定生成文件的输出目录
-cmake_minimum_required(VERSION 2.8)
-project(project_name)
+cmake_minimum_required(VERSION 3.20)
+project(project_name
+    VERSION 1.0.0
+    LANGUAGES C CXX
+    DESCRIPTION "A cmake template project"
+)
 
-message("-- system arch:  ${CMAKE_SYSTEM_PROCESSOR}")
-message("-- output path:  ${PROJECT_OUTPUT_DIR} ")
+# version file
+configure_file(src/version.h.in "${CMAKE_BINARY_DIR}/version.h")
+
+# ---------------------------------------------------------------------------------------
+# Set global variable
+# ---------------------------------------------------------------------------------------
+
+# ############################ User defined variable #############################
+set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+set(platform ${CMAKE_SYSTEM_NAME})
+
+set(arch ${CMAKE_SYSTEM_PROCESSOR})
+
+if(WIN32)
+    if(CMAKE_CL_64)
+        set(arch x86_64)
+    else()
+        set(arch x86)
+    endif()
+elseif(APPLE)
+elseif(ANDROID)
+endif()
+
+message(STATUS "system platform: ${platform}")
+message(STATUS "system arch: ${arch}")
 
 # set output path
-set(PROJECT_OUTPUT_DIR ${PROJECT_BINARY_DIR}/${CMAKE_SYSTEM_PROCESSOR})
-SET(PROJECT_INCLUDE_DIR ${PROJECT_OUTPUT_DIR}/include)
+set(PROJECT_OUTPUT_DIR ${PROJECT_BINARY_DIR}/${arch})
 
-# mkdir directory
-file(MAKE_DIRECTORY ${PROJECT_INCLUDE_DIR}) 
-FILE(MAKE_DIRECTORY ${PROJECT_OUTPUT_DIR}/bin)
-FILE(MAKE_DIRECTORY ${PROJECT_OUTPUT_DIR}/lib)
+message(STATUS "output path: ${PROJECT_OUTPUT_DIR} ")
 
-## set the target path
+# set the target path
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_OUTPUT_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_OUTPUT_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_OUTPUT_DIR}/lib)
 
-# 中间部分-指定工程依赖
-# 指定工程需要用到的一些系统包和库
-# 指定依赖的库文件
+# load cmake script
+set(CMAKE_MODULE_PATH ${PROJECT_ROOT_DIR}/cmake)
 
-find_package(PkgConfig)
-	pkg_check_modules(GSTREAMER QUIET gstreamer-1.0)
-	pkg_check_modules(GST_APP REQUIRED gstreamer-app-1.0)
+# ########################### Global macros #############################
+add_definitions(-DDEBUG -DYES_IS_ME)
 
-find_package(Qt4 REQUIRED)
-find_package(CUDA)
-find_package(OpenGL)
-find_package(OpenCV)
+# ---------------------------------------------------------------------------------------
+# Add 3rdparty library
+# ---------------------------------------------------------------------------------------
+add_subdirectory(${PROJECT_ROOT_DIR}/3rdparty/build_from_source)
 
-## set c++11 编译选项
-# -std=c++11 包含C++11特性
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")	
+# ---------------------------------------------------------------------------------------
+# Build target
+# ---------------------------------------------------------------------------------------
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-## set CUDA NVCC编译选项
-set(
-	CUDA_NVCC_FLAGS
-	${CUDA_NVCC_FLAGS}; 
-    -O3 
-	-gencode arch=compute_53,code=sm_53
-    -gencode arch=compute_62,code=sm_62  ##TX2
-    -gencode arch=compute_30,code=sm_30
+# get source files
+file(GLOB_RECURSE source_files
+    ${PROJECT_ROOT_DIR}/src/*.c
+    ${PROJECT_ROOT_DIR}/src/*.cpp
 )
 
-# INCLUDE for c/C++ include
-include_directories(${PROJECT_INCLUDE_DIR})
-include_directories(
-    /usr/include/gstreamer-1.0
-    /usr/lib/${CMAKE_SYSTEM_PROCESSOR}-linux-gnu/gstreamer-1.0/include
-    /usr/include/glib-2.0
-    /usr/include/libxml2 /usr/lib/${CMAKE_SYSTEM_PROCESSOR}-linux-gnu/glib-2.0/include
-    /usr/include/opencv2
+# get header files
+file(GLOB_RECURSE header_files
+    ${PROJECT_ROOT_DIR}/src/*.h
+    ${PROJECT_ROOT_DIR}/src/*.hpp
 )
 
-# 结尾部分-指定输出文件
+# get interface header files
+list(APPEND interface_files
+    ${PROJECT_ROOT_DIR}/include/project_name/project_name.h
+    ${PROJECT_ROOT_DIR}/include/project_name/error_code.h
+)
 
-#create executable-file
-add_executable(exe-filename needed-C_or_C++file)
+# not add STATIC or SHARED, control by BUILD_SHARED_LIBS
+message(STATUS "Is build shared library: ${BUILD_SHARED_LIBS}")
+add_library(project_name)
+target_sources(project_name
+    PUBLIC
+    ${interface_files}
+    PRIVATE
+    ${source_files}
+    ${header_files}
+)
 
-#create shared-library
-add_library(lib-filename SHARED needed-files-list)
+target_include_directories(project_name
+    PUBLIC
+    ${PROJECT_ROOT_DIR}/include
+    PRIVATE
+    ${PROJECT_ROOT_DIR}/src
+    ${CMAKE_BINARY_DIR}
+)
 
-## CUDA 版本
-cuda_add_executable(exe-filename needed-cu_file)
-cuda_add_library(lib-filename SHARED needed-cu_files-list)
+if(BUILD_SHARED_LIBS)
+target_compile_definitions(project_name
+    PRIVATE
+    SHARED_LIB
+    DLL_EXPORT
+)
+endif()
 
-## 对于有多个文件可以先创建一个变量 file-list
-file(GLOB gstcam_source  lib/gstreamer/*cpp  lib/image/*cpp lib/cuda/*cpp lib/cuda/*cu  lib/opengl/*cpp  )
-file(GLOB gstcam_include lib/gstreamer/*h  lib/image/*h lib/cuda/*h lib/opengl/*h)
+if(WIN32)
+    set_target_properties(project_name PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+endif()
 
-## 循环打印一下看看
-foreach(sources ${gstcam_source})
-MESSAGE("-- the ${PROJECT_NAME}  contion ${sources}")     
-endforeach(sources ${})
+# ############################ Complile option #############################
+target_compile_features(project_name
+    PUBLIC
+    cxx_std_17
+)
+message(STATUS "Compile options for c++: ${CMAKE_CXX_FLAGS}")
 
+# ############################ Link library #############################
+target_link_libraries(project_name
+    PRIVATE
+    build_from_source
+)
 
-## creat gstcam shared library
-cuda_add_library(${PROJECT_NAME} SHARED ${gstcam_source})
-target_link_libraries(${PROJECT_NAME}    Qt4::QtGui GL GLEW gstreamer-1.0 gstapp-1.0 ${OpenCV_LIBS})
+# ############################ Build example #############################
+add_executable(example)
+target_sources(example
+    PRIVATE
+    ${PROJECT_ROOT_DIR}/example/example.cpp
+)
 
-# transfer all headers to the include directory
-foreach(include ${gstcam_include})
-   message("-- Copying ${include}")
-   configure_file(${include} ${PROJECT_INCLUDE_DIR} COPYONLY)
-endforeach()
+if(WIN32)
+    set_target_properties(example PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+endif()
 
-## create exe-file
-add_executable(gst_app_test src/gst-camera.cpp)
-target_link_libraries(gst_app_test ${PROJECT_NAME})
-
+target_link_libraries(example
+    PRIVATE
+    project_name
+)
