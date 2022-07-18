@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(project_name
-    VERSION 1.0.0
+    VERSION 1.0
     LANGUAGES C CXX
     DESCRIPTION "A cmake template project"
 )
-
-# version file
-configure_file(src/version.h.in "${CMAKE_BINARY_DIR}/version.h")
 
 # ---------------------------------------------------------------------------------------
 # Set global variable
@@ -64,6 +61,19 @@ endif()
 # ---------------------------------------------------------------------------------------
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
+############################# Config version info #############################
+# 生成git版本信息至GIT_VERSION变量
+include(get_git_version)
+message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${GIT_VERSION}")
+# version file
+configure_file(src/version.h.in "${CMAKE_BINARY_DIR}/version.h")
+
+# 生成windows版本信息文件
+if(WIN32)
+    configure_file("${PROJECT_ROOT_DIR}/src/win_version_info.rc.in" "${PROJECT_BINARY_DIR}/win_version_info.rc")
+    set(windows_verson_file ${PROJECT_BINARY_DIR}/win_version_info.rc)
+endif()
+
 # ############################ Add source code #############################
 
 # get source files
@@ -95,6 +105,7 @@ target_sources(project_name
     PRIVATE
     ${source_files}
     ${header_files}
+    ${windows_verson_file}
 )
 
 target_include_directories(project_name
@@ -125,6 +136,15 @@ if(WIN32)
     # Avoid error: 'MD_DynamicRelease' doesn't match value 'MT_StaticRelease'
     set_target_properties(project_name PROPERTIES
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+
+    # Copy .dll to execute folder
+    add_custom_command(TARGET project_name POST_BUILD
+        VERBATIM
+        COMMAND_EXPAND_LISTS
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${BugSplat_DLLS}
+        "$<TARGET_FILE_DIR:project_name>"
     )
 endif()
 
@@ -157,6 +177,33 @@ target_link_libraries(example
     project_name
 )
 
+
+# ---------------------------------------------------------------------------------------
+# Install
+# ---------------------------------------------------------------------------------------
+
+set(PDB_FILES
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}.pdb
+)
+
+install(TARGETS jpeg_repair
+    RUNTIME DESTINATION bin/${platform}/${arch}
+    ARCHIVE DESTINATION lib/${platform}/${arch}
+    )
+
+install(FILES
+    ${BugSplat_DLLS}
+    ${PDB_FILES}
+    DESTINATION bin/${platform}/${arch}
+    )
+
+install(FILES ${CMAKE_BINARY_DIR}/version DESTINATION .)
+
+install(DIRECTORY ${PROJECT_ROOT_DIR}/include/project_name/ DESTINATION include)
+install(DIRECTORY ${PROJECT_ROOT_DIR}/example/ DESTINATION example)
+install(DIRECTORY ${PROJECT_ROOT_DIR}/doc/ DESTINATION doc)
+
+
 # ---------------------------------------------------------------------------------------
 # Some cmake operator sample
 # ---------------------------------------------------------------------------------------
@@ -181,3 +228,4 @@ foreach(value ${my_list})
     LIST(FIND my_list ${value} idx)
     message(STATUS "my_list[${idx}]: ${value}")
 endforeach()
+
