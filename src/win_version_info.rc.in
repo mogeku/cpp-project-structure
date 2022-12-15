@@ -75,12 +75,12 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "CompanyName", "Tenorshare"
-            VALUE "FileDescription", "${PROJECT_NAME}"
+            VALUE "FileDescription", "${MY_PROJECT}"
             VALUE "FileVersion", "${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}, ${GIT_VERSION}"
-            VALUE "InternalName", "${PROJECT_NAME}.dll"
+            VALUE "InternalName", "${MY_PROJECT}.dll"
             VALUE "LegalCopyright", "Copyright (C) 2020"
-            VALUE "OriginalFilename", "${PROJECT_NAME}.dll"
-            VALUE "ProductName", "${PROJECT_NAME}"
+            VALUE "OriginalFilename", "${MY_PROJECT}.dll"
+            VALUE "ProductName", "${MY_PROJECT}"
             VALUE "ProductVersion", "${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}, ${GIT_VERSION}"
         END
     END

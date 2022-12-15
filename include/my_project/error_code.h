@@ -1,7 +1,7 @@
-#ifndef PROJECT_NAME_ERROR_CODE_H_
-#define PROJECT_NAME_ERROR_CODE_H_
+#ifndef MY_PROJECT_ERROR_CODE_H_
+#define MY_PROJECT_ERROR_CODE_H_
 
-enum ProjectNameErrorCode
+enum my_project_ErrorCode
 {
 	ERROR_NO,
 	ERROR_INVALID_PARM = 3000,
@@ -16,4 +16,4 @@ enum ProjectNameErrorCode
 	ERROR_NOT_INIT_DB_READER,
 };
 
-#endif // PROJECT_NAME_ERROR_CODE_H_
+#endif // MY_PROJECT_ERROR_CODE_H_

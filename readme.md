@@ -7,13 +7,13 @@
 # 顶层目录结构
 
 ```shell
-project_name
+my_project
 ├── deploy
 ├── build
 ├── doc
 ├── 3rdparty
 ├── include
-│   └── project_name
+│   └── my_project
 ├── src
 ├── tools
 ├── scripts
@@ -32,7 +32,7 @@ project_name
 - **build :** 用于存放build时cmake产生的中间文件，其包含子目录release和debug。
 - **doc :** 用于存放项目的相关文档。
 - **3rdparty :** 用于存放第三方库，每个第三库以单独目录的形式组织在3rdparty目录下。其中每个第三方目录下又有 `include` 和 `lib` 分别存放第三方库的头文件和库文件。
-- **include/project_name :** 用于存放每个模块以及整个工程对外的头文件。具体格式如下文。
+- **include/my_project :** 用于存放每个模块以及整个工程对外的头文件。具体格式如下文。
 - **src :** 存放源码文件，以及内部头文件。具体格式如下文。
 - **tools :** 包含一些支持项目构建的工具，如编译器等，一般情况下使用软链接。
 - **scripts :** 包含一些脚本文件，如使用Jenkins进行自动化构建时所需要的脚本文件，以及一些用于预处理的脚本文件。
@@ -70,30 +70,30 @@ src
 └── CMakeLists.txt
 ```
 
-1. 总源码文件目录以 `project_name` 命名，即与项目同名，存放在项目根目录下。
-2. 源码文件分模块进行组织，分别以各个模块进行命名存放在 `project_name` 目录下，如示例中的 `module_1` 、`module_2`。
+1. 总源码文件目录以 `my_project` 命名，即与项目同名，存放在项目根目录下。
+2. 源码文件分模块进行组织，分别以各个模块进行命名存放在 `my_project` 目录下，如示例中的 `module_1` 、`module_2`。
 3. 在每个子模块目录下，只包含源文件以及该模块内部所调用的头文件。
 4. 每个子模块的根目录下存放该模块的主要功能逻辑代码，如 `module_1.cc`。另外，可按照功能再划分子目录进行源码组织，但不可以出现模块嵌套的情况。
-5. 若要包含内部头文件时，包含路径要从 `project_name` 开始路径要完整，如`#include "project_name/module1/dir_1/somthing.h"`，以防止头文件名称冲突的情况，同时遵循了[Google C++编码规范](https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/)。
+5. 若要包含内部头文件时，包含路径要从 `my_project` 开始路径要完整，如`#include "my_project/module1/dir_1/somthing.h"`，以防止头文件名称冲突的情况，同时遵循了[Google C++编码规范](https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/)。
 
 # 头文件目录结构说明
 
 ```shell
 # example include tree
 include
-└── project_name
+└── my_project
     ├── module_1
     │   ├── module_1_header_1.h
     │   └── module_1_header_2.h
     ├── module_2
     │   └── module_2.h
-    └── project_name.h
+    └── my_project.h
 ```
 
-1. （公共）头文件目录以 `include/project_name` 命名，即文件目录为两级，存放在项目根目录下。该目录只包含所有对外的头文件。
-2. 头文件同样分模块进行组织，分别以各个模块进行命名存放在 `include/project_name` 目录下，如示例中的 `module_1` 、`module_1`。
-3. `include/project_name` 目录下最多只包含一级子目录，即最多按照模块再划分一级，模块内的功能头文件不再以功能进行划分。
-4. 若要包含外部头文件时，包含路径同样要从 `project_name` 开始路径要完整，如`#include "project_name/module_2/module_2.h"`。
+1. （公共）头文件目录以 `include/my_project` 命名，即文件目录为两级，存放在项目根目录下。该目录只包含所有对外的头文件。
+2. 头文件同样分模块进行组织，分别以各个模块进行命名存放在 `include/my_project` 目录下，如示例中的 `module_1` 、`module_1`。
+3. `include/my_project` 目录下最多只包含一级子目录，即最多按照模块再划分一级，模块内的功能头文件不再以功能进行划分。
+4. 若要包含外部头文件时，包含路径同样要从 `my_project` 开始路径要完整，如`#include "my_project/module_2/module_2.h"`。
 
 # 其他
 

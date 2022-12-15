@@ -1,18 +1,18 @@
-#ifndef PROJECT_NAME_VERSION_H_
-#define PROJECT_NAME_VERSION_H_
+#ifndef MY_PROJECT_VERSION_H_
+#define MY_PROJECT_VERSION_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define PROJECT_NAME_VERSION_STR "@project_name_VERSION_MAJOR@, @project_name_VERSION_MINOR@, @project_name_VERSION_PATCH@, @GIT_VERSION@"
-#define PROJECT_NAME_VERSION_BUGSPLAT "@project_name_VERSION_MAJOR@.@project_name_VERSION_MINOR@.@project_name_VERSION_PATCH@.@GIT_VERSION@"
-#define PROJECT_NAME_VERSION_MAJOR @project_name_VERSION_MAJOR@
-#define PROJECT_NAME_VERSION_MINOR @project_name_VERSION_MINOR@
-#define PROJECT_NAME_VERSION_PATCH @project_name_VERSION_PATCH@
+#define MY_PROJECT_VERSION_STR "@my_project_VERSION_MAJOR@, @my_project_VERSION_MINOR@, @my_project_VERSION_PATCH@, @GIT_VERSION@"
+#define MY_PROJECT_VERSION_BUGSPLAT "@my_project_VERSION_MAJOR@.@my_project_VERSION_MINOR@.@my_project_VERSION_PATCH@.@GIT_VERSION@"
+#define MY_PROJECT_VERSION_MAJOR @my_project_VERSION_MAJOR@
+#define MY_PROJECT_VERSION_MINOR @my_project_VERSION_MINOR@
+#define MY_PROJECT_VERSION_PATCH @my_project_VERSION_PATCH@
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // PROJECT_NAME_VERSION_H_
+#endif  // MY_PROJECT_VERSION_H_

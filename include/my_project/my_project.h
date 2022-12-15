@@ -1,5 +1,5 @@
-#ifndef PROJECT_NAME_H_
-#define PROJECT_NAME_H_
+#ifndef MY_PROJECT_H_
+#define MY_PROJECT_H_
 
 #ifdef _WIN32
 #ifdef SHARED_LIB
@@ -22,4 +22,4 @@
 
 LIB_API int run();
 
-#endif  // PROJECT_NAME_H_
+#endif  // MY_PROJECT_H_

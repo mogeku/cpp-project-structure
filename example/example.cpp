@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "project_name/project_name.h"
+#include "my_project/my_project.h"
 
 int main() {
     int ret = run();
 
-    std::cout << "project_name run return " << ret << std::endl;
+    std::cout << "my_project run return " << ret << std::endl;
     return ret;
 }
