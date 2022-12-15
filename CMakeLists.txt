@@ -98,6 +98,7 @@ list(APPEND interface_files
 # ############################ Config library target #############################
 
 # not add STATIC or SHARED, control by BUILD_SHARED_LIBS
+option(BUILD_SHARED_LIBS "Is build shared library, default is OFF")
 message(STATUS "Is build shared library: ${BUILD_SHARED_LIBS}")
 add_library(${project_name})
 target_sources(${project_name}
